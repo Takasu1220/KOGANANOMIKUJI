@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修学旅行お疲れ様!</title>
+    <link rel="preconnect" href="https://googleapis.com">
+    <link rel="preconnect" href="https://gstatic.com" crossorigin>
+    <link href="https://googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
+    
+    <style>
+  
+        body {
+            background-color: #121212;
+            color: #e0e0e0;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+  
+        .omikuji-card {
+            background-color: #1e1e1e;
+            border: 2px solid #ff79c6; /* ピンクのアクセント */
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+            max-width: 350px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #ff79c6;
+            font-size: 24px;
+            margin-bottom: 30px;
+        }
+
+     
+        .draw-btn {
+            background-color: #ff79c6;
+            color: #121212;
+            border: none;
+            padding: 12px 30px;
+            font-size: 18px;
+            font-family: 'Zen Maru Gothic', sans-serif;
+            font-weight: 700;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, background-color 0.2s;
+            box-shadow: 0 4px 15px rgba(255, 121, 198, 0.4);
+        }
+
+        .draw-btn:hover {
+            background-color: #ff92df;
+            transform: scale(1.05);
+        }
+
+        .draw-btn:active {
+            transform: scale(0.95);
+        }
+
+       
+        .result-container {
+            margin-top: 30px;
+            min-height: 120px;
+        }
+
+        .result-label {
+            font-size: 14px;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
+        .result-fortune {
+            font-size: 34px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            animation: popIn 0.3s ease-out;
+        }
+
+       
+        .result-fortune.win {
+            color: #50fa7b; 
+            text-shadow: 0 0 10px rgba(80, 250, 123, 0.6);
+        }
+
+      
+        .result-fortune.lose {
+            color: #bd93f9; 
+            font-size: 28px; 
+        }
+
+        .result-text {
+            font-size: 16px;
+            color: #f1fa8c;
+        }
+
+        
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="omikuji-card">
+        <h1>いきなりくじ引き!!!!!!!!!</h1>
+        <button class="draw-btn" onclick="drawOmikuji()">おみくじを引く</button>
+        
+        <div class="result-container" id="resultContainer" style="display: none;">
+            <div class="result-label">結果は、、、</div>
+            <div class="result-fortune" id="fortune"></div>
+            <div class="result-text" id="details"></div>
+        </div>
+    </div>
+
+    <script>
+        function drawOmikuji() {
+           
+            const randomNumber = Math.floor(Math.random() * 20);
+            
+            const fortuneElement = document.getElementById('fortune');
+            const detailsElement = document.getElementById('details');
+            const container = document.getElementById('resultContainer');
+            
+    
+            fortuneElement.classList.remove('win', 'lose');
+
+           
+            if (randomNumber === 0) {
+              
+                fortuneElement.innerText = "あたり🎉";
+                detailsElement.innerText = "おめでとう!";
+                fortuneElement.classList.add('win');
+            } else {
+              
+                fortuneElement.innerText = "はずれ";
+                detailsElement.innerText = "ｻﾞﾝﾈﾝﾃﾞｼﾀ!";
+                fortuneElement.classList.add('lose');
+            }
+
+          
+            container.style.display = 'none';
+            setTimeout(() => {
+                container.style.display = 'block';
+            }, 10);
+        }
+    </script>
+
+</body>
+</html>
