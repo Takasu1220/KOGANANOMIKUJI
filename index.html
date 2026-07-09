@@ -3,13 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>修学旅行お疲れ様!</title>
+    <title>修学旅行お疲れ!</title>
     <link rel="preconnect" href="https://googleapis.com">
     <link rel="preconnect" href="https://gstatic.com" crossorigin>
     <link href="https://googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&display=swap" rel="stylesheet">
     
     <style>
-  
         body {
             background-color: #121212;
             color: #e0e0e0;
@@ -21,10 +20,9 @@
             margin: 0;
         }
 
-  
         .omikuji-card {
             background-color: #1e1e1e;
-            border: 2px solid #ff79c6; /* ピンクのアクセント */
+            border: 2px solid #ff79c6; 
             border-radius: 20px;
             padding: 40px;
             text-align: center;
@@ -39,7 +37,6 @@
             margin-bottom: 30px;
         }
 
-     
         .draw-btn {
             background-color: #ff79c6;
             color: #121212;
@@ -50,20 +47,28 @@
             font-weight: 700;
             border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, background-color 0.2s;
+            transition: transform 0.2s, background-color 0.2s, opacity 0.2s;
             box-shadow: 0 4px 15px rgba(255, 121, 198, 0.4);
         }
 
-        .draw-btn:hover {
+        .draw-btn:hover:not(:disabled) {
             background-color: #ff92df;
             transform: scale(1.05);
         }
 
-        .draw-btn:active {
+        .draw-btn:active:not(:disabled) {
             transform: scale(0.95);
         }
 
-       
+        .draw-btn:disabled {
+            background-color: #555555;
+            color: #888888;
+            cursor: not-allowed; 
+            box-shadow: none;
+            transform: none;
+            opacity: 0.6;
+        }
+
         .result-container {
             margin-top: 30px;
             min-height: 120px;
@@ -82,16 +87,14 @@
             animation: popIn 0.3s ease-out;
         }
 
-       
         .result-fortune.win {
             color: #50fa7b; 
             text-shadow: 0 0 10px rgba(80, 250, 123, 0.6);
         }
 
-      
         .result-fortune.lose {
             color: #bd93f9; 
-            font-size: 28px; 
+            font-size: 28px;
         }
 
         .result-text {
@@ -99,7 +102,6 @@
             color: #f1fa8c;
         }
 
-        
         @keyframes popIn {
             0% { transform: scale(0.8); opacity: 0; }
             100% { transform: scale(1); opacity: 1; }
@@ -109,46 +111,75 @@
 <body>
 
     <div class="omikuji-card">
-        <h1>いきなりくじ引き!!!!!!!!!</h1>
-        <button class="draw-btn" onclick="drawOmikuji()">おみくじを引く</button>
+        <h1>いきなりおみくじ!!!!!</h1>
+        <button class="draw-btn" id="drawBtn" onclick="drawOmikuji()">おみくじを引く</button>
         
         <div class="result-container" id="resultContainer" style="display: none;">
-            <div class="result-label">結果は、、、</div>
+            <div class="result-label">結果は…</div>
             <div class="result-fortune" id="fortune"></div>
             <div class="result-text" id="details"></div>
         </div>
     </div>
 
     <script>
+        window.onload = function() {
+            const hasDrawn = localStorage.getItem('omikuji_has_drawn');
+            
+            if (hasDrawn === 'true') {
+                const savedResult = localStorage.getItem('omikuji_result');
+                const savedDetails = localStorage.getItem('omikuji_details');
+                const savedClass = localStorage.getItem('omikuji_class');
+                
+                showResult(savedResult, savedDetails, savedClass);
+                lockButton();
+            }
+        };
+
         function drawOmikuji() {
-           
+            lockButton();
+
             const randomNumber = Math.floor(Math.random() * 20);
             
+            let resultText = "";
+            let detailsText = "";
+            let resultClass = "";
+
+            if (randomNumber === 0) {
+                resultText = "あたり";
+                detailsText = "おめでとう。以上";
+                resultClass = "win";
+            } else {
+                resultText = "ｻﾞﾝﾈﾝﾃﾞｼﾀ";
+                detailsText = "明日はきっといいことあるさ。";
+                resultClass = "lose";
+            }
+
+            showResult(resultText, detailsText, resultClass);
+
+            localStorage.setItem('omikuji_has_drawn', 'true');
+            localStorage.setItem('omikuji_result', resultText);
+            localStorage.setItem('omikuji_details', detailsText);
+            localStorage.setItem('omikuji_class', resultClass);
+        }
+
+        function showResult(result, details, className) {
             const fortuneElement = document.getElementById('fortune');
             const detailsElement = document.getElementById('details');
             const container = document.getElementById('resultContainer');
-            
-    
+
             fortuneElement.classList.remove('win', 'lose');
+            
+            fortuneElement.innerText = result;
+            detailsElement.innerText = details;
+            fortuneElement.classList.add(className);
+            
+            container.style.display = 'block';
+        }
 
-           
-            if (randomNumber === 0) {
-              
-                fortuneElement.innerText = "あたり🎉";
-                detailsElement.innerText = "おめでとう!";
-                fortuneElement.classList.add('win');
-            } else {
-              
-                fortuneElement.innerText = "はずれ";
-                detailsElement.innerText = "ｻﾞﾝﾈﾝﾃﾞｼﾀ!";
-                fortuneElement.classList.add('lose');
-            }
-
-          
-            container.style.display = 'none';
-            setTimeout(() => {
-                container.style.display = 'block';
-            }, 10);
+        function lockButton() {
+            const btn = document.getElementById('drawBtn');
+            btn.disabled = true;
+            btn.innerText = "終了しました";
         }
     </script>
 
